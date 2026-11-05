@@ -1,6 +1,9 @@
 # Bevy Game
 
 > "If you know the enemy and know yourself, you need not fear the result of a hundred battles. If you know yourself but not the enemy, for every victory gained you will also suffer a defeat. If you know neither the enemy nor yourself, you will succumb in every battle."
+- Sun Tzu, The Art of War
+
+> actually i hate rust and bevy, but I thought that I must know this well to properly hate and give a more contructive feedback on language and engine, so thats why i decided to make something with this 
 
 Minimal [Bevy](https://bevy.org) project: an empty window. Builds with Nix for
 x86_64, aarch64 and WebAssembly.
