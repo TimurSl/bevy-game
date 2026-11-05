@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 use bevy::input::mouse::AccumulatedMouseMotion;
-use bevy::window::{CursorGrabMode, PrimaryWindow};
+use bevy::window::{CursorGrabMode, CursorOptions, PrimaryWindow};
 
 #[derive(Component)]
 struct Player;
@@ -35,7 +35,7 @@ fn setup(
         Transform::from_xyz(0.0,0.9,0.0),
     ));
     commands.spawn((
-        PointLight { shadows_enabled: true, ..default() },
+        PointLight { shadow_maps_enabled: true, ..default() },
         Transform::from_xyz(4.0, 8.0, 4.0),
     ));
 
@@ -51,7 +51,7 @@ fn walk(
     time: Res<Time>,
     mut query: Query<&mut Transform, With<Player>>,
 ) {
-    let Ok(mut transform) = query.single_mut() else { return };
+    let Ok(mut t) = query.single_mut() else { return };
 
     let f = *t.forward();
     let r = *t.right();
@@ -82,7 +82,7 @@ fn look(
     t.rotation = Quat::from_euler(EulerRot::YXZ, yaw, pitch, 0.0);
 }
 
-fn grab_cursor(mut window: Single<&mut Window, With<PrimaryWindow>>) {
-    window.cursor_options.grab_mode = CursorGrabMode::Locked;
-    window.cursor_options.visible = false;
+fn grab_cursor(mut cursor: Single<&mut CursorOptions, With<PrimaryWindow>>) {
+    cursor.grab_mode = CursorGrabMode::Locked;
+    cursor.visible = false;
 }
