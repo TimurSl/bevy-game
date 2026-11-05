@@ -27,5 +27,5 @@ fn setup(mut commands: Commands) {
             Vec2::new(100.0, 100.0)
         ), 
         Transform:from_xyz(0.0,0.0,0.0),
-    ))
+    ));
 }
