@@ -1,4 +1,6 @@
 use bevy::prelude::*;
+use bevy::input::mouse::AccumulatedMouseMotion;
+use bevy::window::{CursorGrabMode, PrimaryWindow};
 
 #[derive(Component)]
 struct Player;
@@ -17,8 +19,8 @@ fn main() {
             }),
             ..default()
         }))
-        .add_systems(Startup, setup)
-        .add_systems(Update, move_player)
+        .add_systems(Startup, (setup, grab_cursor))
+        .add_systems(Update, (look, walk))
         .run();
 }
 
@@ -28,7 +30,6 @@ fn setup(
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
     commands.spawn((
-        Player,
         Mesh3d(meshes.add(Capsule3d::new(0.4, 1.0))),
         MeshMaterial3d(materials.add(Color::srgb(0.2, 0.6, 0.9))),
         Transform::from_xyz(0.0,0.9,0.0),
@@ -39,26 +40,49 @@ fn setup(
     ));
 
     commands.spawn((
+        Player,
         Camera3d::default(),
-        Transform::from_xyz(-3.0, 3.0, 6.0).looking_at(Vec3::ZERO, Vec3::Y),
+        Transform::from_xyz(0.0, 1.7, 5.0),
     ));
 }
 
-fn move_player(
+fn walk(
     keys: Res<ButtonInput<KeyCode>>,
     time: Res<Time>,
     mut query: Query<&mut Transform, With<Player>>,
 ) {
     let Ok(mut transform) = query.single_mut() else { return };
 
-    let mut dir = Vec3::ZERO;
-    if keys.pressed(KeyCode::KeyW) { dir.z -= 1.0; }
-    if keys.pressed(KeyCode::KeyS) { dir.z += 1.0; }
-    if keys.pressed(KeyCode::KeyA) { dir.x -= 1.0; }
-    if keys.pressed(KeyCode::KeyD) { dir.x += 1.0; }
+    let f = *t.forward();
+    let r = *t.right();
+    let forward = Vec3::new(f.x, 0.0, f.z).normalize_or_zero();
+    let right   = Vec3::new(r.x, 0.0, r.z).normalize_or_zero();
 
-    if dir != Vec3::ZERO {
-        let speed = 5.0;
-        transform.translation += dir.normalize() * speed * time.delta_secs();
-    }
+    let mut dir = Vec3::ZERO;
+    if keys.pressed(KeyCode::KeyW) { dir += forward; }
+    if keys.pressed(KeyCode::KeyS) { dir -= forward; }
+    if keys.pressed(KeyCode::KeyD) { dir += right; }
+    if keys.pressed(KeyCode::KeyA) { dir -= right; }
+
+    t.translation += dir.normalize_or_zero() * 5.0 * time.delta_secs();
+}
+
+fn look(
+    motion: Res<AccumulatedMouseMotion>,
+    mut query: Query<&mut Transform, With<Player>>,
+) {
+    let Ok(mut t) = query.single_mut() else { return };
+
+    let (mut yaw, mut pitch, _) = t.rotation.to_euler(EulerRot::YXZ);
+    let sens = 0.003;
+    yaw   -= motion.delta.x * sens;  
+    pitch -= motion.delta.y * sens;  
+    pitch = pitch.clamp(-1.5, 1.5); 
+
+    t.rotation = Quat::from_euler(EulerRot::YXZ, yaw, pitch, 0.0);
+}
+
+fn grab_cursor(mut window: Single<&mut Window, With<PrimaryWindow>>) {
+    window.cursor_options.grab_mode = CursorGrabMode::Locked;
+    window.cursor_options.visible = false;
 }
