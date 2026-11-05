@@ -20,4 +20,12 @@ fn main() {
 
 fn setup(mut commands: Commands) {
     commands.spawn(Camera2d);
+    
+    commands.spawn((
+        Sprite::from_color(
+            Color::srgb(0.9, 0.3, 0.3), 
+            Vec2::new(100.0, 100.0)
+        ), 
+        Transform:from_xyz(0.0,0.0,0.0),
+    ))
 }
