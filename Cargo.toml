@@ -1,0 +1,25 @@
+[package]
+name = "bevy-game"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+bevy = "0.16"
+
+# Web-only: WebGL2 fallback for browsers without WebGPU, and the getrandom
+# backend required when targeting wasm32-unknown-unknown.
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+bevy = { version = "0.16", features = ["webgl2"] }
+getrandom = { version = "0.3", features = ["wasm_js"] }
+
+# Faster iteration in dev builds: optimise dependencies, keep our code debuggable.
+[profile.dev]
+opt-level = 1
+
+[profile.dev.package."*"]
+opt-level = 3
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
