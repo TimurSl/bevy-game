@@ -130,12 +130,12 @@
           inherit web;
         };
 
-        # `nix run .#serve` -> http://localhost:8080
+        # `nix run .#web` -> http://localhost:8080
         apps = {
           default = flake-utils.lib.mkApp { drv = self.packages.${system}.default; };
-          serve = {
+          web = {
             type = "app";
-            program = toString (pkgs.writeShellScript "serve" ''
+            program = toString (pkgs.writeShellScript "serve-web" ''
               exec ${pkgs.caddy}/bin/caddy file-server --root ${web} --listen :''${PORT:-8080}
             '');
           };

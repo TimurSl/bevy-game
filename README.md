@@ -37,8 +37,8 @@ nix build .#web        # static site          -> result/{index.html,game.js,game
 nix build              # native for the current machine
 ```
 
-Try the web build locally: `nix run .#serve` then open <http://localhost:8080>
-(`PORT=3000 nix run .#serve` to change the port).
+Try the web build locally: `nix run .#web` then open <http://localhost:8080>
+(`PORT=3000 nix run .#web` to change the port).
 
 ## Deploy to the x86 VPS
 
