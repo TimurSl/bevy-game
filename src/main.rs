@@ -31,7 +31,7 @@ fn setup(
         Player,
         Mesh3d(meshes.add(Capsule3d::new(0.4, 1.0))),
         MeshMaterial3d(materials.add(Color::srgb(0.2, 0.6, 0.9))),
-        Tranform::from_xyz(0.0,0.9,0.0),
+        Transform::from_xyz(0.0,0.9,0.0),
     ));
     commands.spawn((
         PointLight { shadows_enabled: true, ..default() },
