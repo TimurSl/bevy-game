@@ -18,14 +18,27 @@ fn main() {
         .run();
 }
 
-fn setup(mut commands: Commands) {
-    commands.spawn(Camera2d);
-    
+fn setup(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+) {
+    // Куб
     commands.spawn((
-        Sprite::from_color(
-            Color::srgb(0.9, 0.3, 0.3), 
-            Vec2::new(100.0, 100.0)
-        ), 
-        Transform::from_xyz(0.0,0.0,0.0),
+        Mesh3d(meshes.add(Cuboid::new(1.0, 1.0, 1.0))),
+        MeshMaterial3d(materials.add(Color::srgb(0.9, 0.3, 0.3))),
+        Transform::from_xyz(0.0, 0.5, 0.0),
+    ));
+
+    // Свет
+    commands.spawn((
+        PointLight { shadows_enabled: true, ..default() },
+        Transform::from_xyz(4.0, 8.0, 4.0),
+    ));
+
+    // Камера, смотрит на центр сцены
+    commands.spawn((
+        Camera3d::default(),
+        Transform::from_xyz(-3.0, 3.0, 6.0).looking_at(Vec3::ZERO, Vec3::Y),
     ));
 }
