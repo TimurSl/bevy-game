@@ -118,7 +118,7 @@
           mkdir -p $out
           wasm-bindgen --target web --no-typescript \
             --out-dir $out --out-name game \
-            ${wasmCrate}/bevy_game.wasm
+            ${wasmCrate}/${pname}.wasm
           cp ${./web/index.html} $out/index.html
         '';
       in
